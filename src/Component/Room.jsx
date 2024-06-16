@@ -3,6 +3,14 @@ import socketIO from 'socket.io-client';
 import LiveVideo from './LiveVideo';
 import { Link } from 'react-router-dom';
 
+
+
+// icon
+import { MdAddCall } from "react-icons/md";
+import { IoIosSend } from "react-icons/io";
+import { IoMdDownload } from "react-icons/io";
+
+
 const socket = socketIO.connect('http://localhost:8000');
 
 function Room() {
@@ -10,7 +18,13 @@ function Room() {
     const [message, setMessage] = useState([]);
     const [file, setFile] = useState(null);
     const [progress, setProgress] = useState(0);
+
+    // handle imge url
     const [imageSrc, setImageSrc] = useState(null);
+    //file handling 
+    const [fileDownloadLink,setFileDownloadLink]=useState(null);
+    const [filename,setFilename]=useState(null);
+
 
     const handleChange = (e) => {
         setType(e.target.value);
@@ -73,12 +87,29 @@ function Room() {
 
         socket.on('getmessage', handleGetMessage);
 
-        const handleGetFile = (data) => {
+       const handleGetFile = (data) => {
             console.log('File received:', data);
             const { base64Data, filename } = data;
-            const fileSrc = `data:image/jpeg;base64,${base64Data}`; // Adjust MIME type if necessary
-            setImageSrc(fileSrc);
+
+            // Check if the file is an image (for example, check the file extension)
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            const ext = filename.split('.').pop().toLowerCase();
+
+            if (imageExtensions.includes(ext)) {
+                // If it's an image, display it
+                const fileSrc = `data:image/${ext};base64,${base64Data}`;
+                setImageSrc(fileSrc);
+            } else {
+                // For non-image files, you might want to provide a download link or icon
+                // Here's an example using an external icon library (replace with your preferred method)
+                const fileUrl = `data:application/octet-stream;base64,${base64Data}`;
+                setImageSrc(null); // Reset imageSrc state if needed
+                setFilename(filename);
+                setFileDownloadLink(fileUrl); // Store the download link in state
+            }
         };
+
+
 
         socket.on('getfile', handleGetFile);
 
@@ -90,10 +121,12 @@ function Room() {
     }, []);
 
     return (
-        <div className="w-3/4 p-4 m-auto flex flex-col  bg-white">
+        <div className="lg:w-3/4 md:w-full p-4 m-auto flex flex-col  bg-white text-black">
             <div className="flex ">
                 <p className='text-2xl m-auto pl-10 flex text-center font-bold mb-4 text-gray-700'>Chat & File Sharing</p>
-                <Link to={'/call'} style={{height:"fit-content"}} className=' bg-green-500  text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out'> call</Link>
+                <Link to={'/call'} style={{ height: "fit-content" }} className=' bg-green-500 flex text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out'>
+                   <MdAddCall className=" m-auto"/> <p className="ml-1">Call</p>
+                </Link>
             </div>
 
                 <div style={{ height: "70vh", overflowY: "scroll"}} className="  mb-4 overflow-scroll bg-gray-50 p-4 rounded-md shadow-md">
@@ -115,18 +148,29 @@ function Room() {
                         className="border border-gray-300 p-2 rounded w-full "
                         placeholder="Enter your message"
                         />
-                    <button type="submit" className="bg-blue-500  text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out">
-                        Send
+                    <button type="submit" className="bg-blue-500 ml-2 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out">
+                        <IoIosSend/> 
                     </button>
                    </form>
                 <form onSubmit={handleFileSubmit} className="mb-4 w-full ">
                     <input type="file" onChange={handleFileChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-700 mb-2 transition duration-300 ease-in-out" />
-                    <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out">
-                        Send File
+                    <button type="submit" className="bg-blue-500 flex text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out">
+                         <IoIosSend className="m-auto" /> <p className="ml-2">Send File</p>
                     </button>
                 </form>
                 <progress value={progress} max="100" className="w-full mb-4"></progress>
-                {imageSrc && <img src={imageSrc} alt="Received file" className="w-full  mt-4 border rounded shadow-md" />}
+              {imageSrc ? (
+                    <img src={imageSrc} alt="Received file" className="w-full mt-4 border rounded shadow-md" />
+                ) : fileDownloadLink ? (
+                    <div className="flex items-center">
+                        <a href={fileDownloadLink} download={filename} className="text-blue-500 hover:text-blue-700 flex items-center">
+                            <span className="mr-2">Download {filename}</span>
+                            {/* Replace with your preferred download icon */}
+                            <IoMdDownload className="text-xl" />
+                        </a>
+                    </div>
+                ) : null}
+
             </div>
     );
 }
