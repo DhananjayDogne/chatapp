@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+      # - node_modules:/app/node_modules
+  
+  backend:
+    image: backenc_callapp
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production 
+    volumes:
+      - ./backend:/app/backend
+# volumes:
+#   node_modules:    
+
+    

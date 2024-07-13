@@ -1,0 +1,23 @@
+.home{
+    display: flex;
+    height: 100vh;
+    margin: auto;
+}
+.home_container{
+    display: flex;
+    margin: auto;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.world1{
+   width: 15rem;
+   height: 15rem;
+   border: 2px solid #c2aa6e;
+   display: flex;
+   border-radius: 12px;
+   text-align: center;
+   margin: 2rem;
+}
+.world1> h1{
+    margin: auto;
+}
