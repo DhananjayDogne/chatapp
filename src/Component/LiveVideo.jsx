@@ -4,8 +4,9 @@ import io from 'socket.io-client';
 // for icon
 import { FaCopy } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
+const backend_url = import.meta.env.BACKEND_URL;
 
-const socket = io('http://localhost:8000');
+const socket = io(`${backend_url}`);
 
 const LiveVideo = () => {
     const localVideoRef = useRef(null);

@@ -12,7 +12,7 @@ import { IoMdDownload } from "react-icons/io";
 
 const backend_url = import.meta.env.BACKEND_URL;
 
-const socket = socketIO.connect(backend_url);
+const socket = socketIO.connect(`${backend_url}`);
 
 function Room() {
     const [type, setType] = useState('');
