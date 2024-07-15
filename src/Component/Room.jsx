@@ -12,9 +12,11 @@ import { IoMdDownload } from "react-icons/io";
 
 const backend_url = import.meta.env.BACKEND_URL;
 
-const socket = socketIO.connect(`${backend_url}`);
+const socket = socketIO.connect('https://callappbackend-bksg5yco.b4a.run/');
+// const socket = socketIO.connect('http://localhost:8000');
 
 function Room() {
+    
     const [type, setType] = useState('');
     const [message, setMessage] = useState([]);
     const [file, setFile] = useState(null);
@@ -76,6 +78,7 @@ function Room() {
     };
 
     useEffect(() => {
+        
         socket.on('helloback', (data) => {
             console.log(data);
         });
@@ -123,6 +126,7 @@ function Room() {
 
     return (
         <div className="lg:w-3/4 md:w-full p-4 m-auto flex flex-col  bg-white text-black">
+            
             <div className="flex ">
                 <p className='text-2xl m-auto pl-10 flex text-center font-bold mb-4 text-gray-700'>Chat & File Sharing</p>
                 <Link to={'/call'} style={{ height: "fit-content" }} className=' bg-green-500 flex text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out'>

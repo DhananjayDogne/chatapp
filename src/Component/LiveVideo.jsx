@@ -6,9 +6,12 @@ import { FaCopy } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 const backend_url = import.meta.env.BACKEND_URL;
 
-const socket = io(`${backend_url}`);
+
+const socket = io('https://callappbackend-bksg5yco.b4a.run/'); 
+// const socket = io.connect('http://localhost:8000');
 
 const LiveVideo = () => {
+    console.log(backend_url);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const peerConnectionRef = useRef(null);
